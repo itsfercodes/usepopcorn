@@ -8,8 +8,7 @@ const containerStyle = {
 };
 
 const starContainerStyle = {
-  display: 'flex',
-  gap: '4px'
+  display: 'flex'
 };
 
 const textStyle = {
@@ -19,6 +18,7 @@ const textStyle = {
 
 function StarRating({ maxRating = 5 }) {
   const [rating, setRating] = useState(0);
+  const [tempRating, setTempRating] = useState(0);
 
   function handleRating(rate) {
     setRating(rate);
@@ -30,12 +30,14 @@ function StarRating({ maxRating = 5 }) {
         {Array.from({ length: maxRating }, (_, i) => (
           <Star
             key={i}
+            full={(tempRating || rating) >= i + 1}
             onRate={() => handleRating(i + 1)}
-            full={rating >= i + 1}
+            onHoverIn={() => setTempRating(i + 1)}
+            onHoverOut={() => setTempRating(0)}
           />
         ))}
       </div>
-      <p style={textStyle}>{rating || ''}</p>
+      <p style={textStyle}>{tempRating || rating || ''}</p>
     </div>
   );
 }
