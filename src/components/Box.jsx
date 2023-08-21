@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function ListBox({ children }) {
+function Box({ children }) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -12,4 +12,4 @@ function ListBox({ children }) {
     </div>
   );
 }
-export default ListBox;
+export default Box;
