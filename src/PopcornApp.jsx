@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Main from './components/Main';
 import NumResults from './components/NumResults';
@@ -7,6 +7,7 @@ import MovieList from './components/MovieList';
 import Box from './components/Box';
 import Summary from './components/Summary';
 import WatchedMovieList from './components/WatchedMovieList';
+import Loader from './components/Loader';
 
 const tempMovieData = [
   {
@@ -55,9 +56,25 @@ const tempWatchedData = [
   }
 ];
 
+const API_KEY = '573749c0';
+
 function PopcornApp() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    async function fecthMovies() {
+      setIsLoading(true);
+      const res = await fetch(
+        `http://www.omdbapi.com/?apikey=${API_KEY}&s=star%20wars`
+      );
+      const data = await res.json();
+      setMovies(data.Search);
+      setIsLoading(false);
+    }
+    fecthMovies();
+  }, []);
 
   return (
     <>
@@ -67,9 +84,7 @@ function PopcornApp() {
       </Navbar>
 
       <Main>
-        <Box>
-          <MovieList movies={movies} />
-        </Box>
+        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
 
         <Box>
           <Summary watched={watched} />
