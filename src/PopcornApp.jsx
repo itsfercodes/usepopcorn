@@ -104,6 +104,7 @@ function PopcornApp() {
             <MovieDetails
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
+              apiKey={API_KEY}
             />
           ) : (
             <>
