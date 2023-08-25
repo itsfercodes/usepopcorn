@@ -36,15 +36,17 @@ const tempWatchedData = [
 const API_KEY = '573749c0';
 
 function PopcornApp() {
+  const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const query = 'star wars';
+  const tempQuery = 'star wars';
 
   useEffect(() => {
     async function fecthMovies() {
       try {
+        setError('');
         setIsLoading(true);
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
@@ -62,22 +64,26 @@ function PopcornApp() {
         setIsLoading(false);
       }
     }
-
+    if (query.length < 3) {
+      setMovies([]);
+      setError('');
+      return;
+    }
     fecthMovies();
-  }, []);
+  }, [query]);
 
   return (
     <>
       <Navbar>
-        <SearchInput />
+        <SearchInput query={query} setQuery={setQuery} />
         <NumResults movies={movies} />
       </Navbar>
 
       <Main>
         <Box>
           {isLoading && <Loader />}
-          {!isLoading && !error && <MovieList movies={movies} />}
           {error && <ErrorMessage message={error} />}
+          {!isLoading && !error && <MovieList movies={movies} />}
         </Box>
 
         <Box>
