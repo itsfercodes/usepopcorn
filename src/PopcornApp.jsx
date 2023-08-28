@@ -11,39 +11,15 @@ import Loader from './components/Loader';
 import ErrorMessage from './components/ErrorMessage';
 import MovieDetails from './components/MovieDetails';
 
-const tempWatchedData = [
-  {
-    imdbID: 'tt1375666',
-    Title: 'Inception',
-    Year: '2010',
-    Poster:
-      'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg',
-    runtime: 148,
-    imdbRating: 8.8,
-    userRating: 10
-  },
-  {
-    imdbID: 'tt0088763',
-    Title: 'Back to the Future',
-    Year: '1985',
-    Poster:
-      'https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg',
-    runtime: 116,
-    imdbRating: 8.5,
-    userRating: 9
-  }
-];
-
 const API_KEY = '573749c0';
 
 function PopcornApp() {
   const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState(null);
-  const tempQuery = 'star wars';
 
   function handleSelectMovie(id) {
     // When clicking on the active id then close it
@@ -52,6 +28,14 @@ function PopcornApp() {
 
   function handleCloseMovie() {
     setSelectedId(null);
+  }
+
+  function handleAddWatchedMovie(movie) {
+    setWatched((w) => [...w, movie]);
+  }
+
+  function handleDeleteWatched(id) {
+    setWatched((w) => w.filter((currentMovie) => currentMovie.imdbID !== id));
   }
 
   useEffect(() => {
@@ -105,11 +89,16 @@ function PopcornApp() {
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
               apiKey={API_KEY}
+              onAddWatchedMovie={handleAddWatchedMovie}
+              watchedMovies={watched}
             />
           ) : (
             <>
               <Summary watched={watched} />
-              <WatchedMovieList watched={watched} />
+              <WatchedMovieList
+                watched={watched}
+                onDeleteWatchedMovie={handleDeleteWatched}
+              />
             </>
           )}
         </Box>
