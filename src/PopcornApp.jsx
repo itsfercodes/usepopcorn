@@ -39,12 +39,15 @@ function PopcornApp() {
   }
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function fecthMovies() {
       try {
         setError('');
         setIsLoading(true);
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
+          `http://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`,
+          { signal: controller.signal }
         );
         // Edge cases
         if (!res.ok)
@@ -53,8 +56,11 @@ function PopcornApp() {
         const data = await res.json();
         if (data.Response === 'False') throw new Error('Movie not found');
         setMovies(data.Search);
+        setError('');
       } catch (err) {
-        setError(err.message);
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -65,6 +71,10 @@ function PopcornApp() {
       return;
     }
     fecthMovies();
+
+    return () => {
+      controller.abort();
+    };
   }, [query]);
 
   return (

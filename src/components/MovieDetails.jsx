@@ -61,6 +61,16 @@ function MovieDetails({
     getMovieDetails();
   }, [selectedId]);
 
+  useEffect(() => {
+    if (title) {
+      document.title = `Movie | ${title}`;
+    }
+
+    return () => {
+      document.title = 'usePopcorn';
+    };
+  }, [title]);
+
   return (
     <div className="details">
       {isLoading ? (
