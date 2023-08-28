@@ -70,6 +70,7 @@ function PopcornApp() {
       setError('');
       return;
     }
+    handleCloseMovie();
     fecthMovies();
 
     return () => {
