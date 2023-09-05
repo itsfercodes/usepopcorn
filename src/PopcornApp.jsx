@@ -10,18 +10,16 @@ import WatchedMovieList from './components/WatchedMovieList';
 import Loader from './components/Loader';
 import ErrorMessage from './components/ErrorMessage';
 import MovieDetails from './components/MovieDetails';
-import useMovies from './hooks/useMovies';
+import { useMovies } from './hooks/useMovies';
+import { useLocalStorageState } from './hooks/useLocalStorageState';
 
 const API_KEY = '573749c0';
 
 function PopcornApp() {
   const [query, setQuery] = useState('');
-  const [watched, setWatched] = useState(() =>
-    JSON.parse(localStorage.getItem('watched'))
-  );
   const [selectedId, setSelectedId] = useState(null);
-
   const { movies, isLoading, error } = useMovies(query, API_KEY);
+  const [watched, setWatched] = useLocalStorageState([], 'watched');
 
   function handleSelectMovie(id) {
     // When clicking on the active id then close it
@@ -39,11 +37,6 @@ function PopcornApp() {
   function handleDeleteWatched(id) {
     setWatched((w) => w.filter((currentMovie) => currentMovie.imdbID !== id));
   }
-
-  useEffect(() => {
-    localStorage.setItem('watched', JSON.stringify(watched));
-  }, [watched]);
-
   return (
     <>
       <Navbar>
