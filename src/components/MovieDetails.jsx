@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import StarRating from './StarRating';
 import Loader from './Loader';
+import { useKey } from '../hooks/useKey';
 
 function MovieDetails({
   selectedId,
@@ -21,6 +22,8 @@ function MovieDetails({
     (currentMovie) => currentMovie.imdbID === selectedId
   )?.userRating;
 
+  useKey('escape', onCloseMovie);
+
   const {
     Title: title,
     Year: year,
@@ -33,8 +36,6 @@ function MovieDetails({
     Director: director,
     Genre: genre
   } = movie;
-
-  const isTop = imdbRating > 8;
 
   function handleAddWatchedMovie() {
     const newWatchedMovie = {
@@ -49,20 +50,6 @@ function MovieDetails({
     onAddWatchedMovie(newWatchedMovie);
     onCloseMovie();
   }
-
-  useEffect(() => {
-    function callback(e) {
-      if (e.code === 'Escape') {
-        onCloseMovie();
-      }
-    }
-
-    document.addEventListener('keydown', callback);
-
-    return () => {
-      document.removeEventListener('keydown', callback);
-    };
-  }, [onCloseMovie]);
 
   useEffect(() => {
     async function getMovieDetails() {
@@ -132,7 +119,7 @@ function MovieDetails({
                 </>
               ) : (
                 <p>
-                  You already rated this movie with {watchedUserRating}{' '}
+                  You already rated this movie with {watchedUserRating}
                   <span>⭐</span>
                 </p>
               )}
