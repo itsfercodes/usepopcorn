@@ -10,18 +10,18 @@ import WatchedMovieList from './components/WatchedMovieList';
 import Loader from './components/Loader';
 import ErrorMessage from './components/ErrorMessage';
 import MovieDetails from './components/MovieDetails';
+import useMovies from './hooks/useMovies';
 
 const API_KEY = '573749c0';
 
 function PopcornApp() {
   const [query, setQuery] = useState('');
-  const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState(() =>
     JSON.parse(localStorage.getItem('watched'))
   );
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState(null);
+
+  const { movies, isLoading, error } = useMovies(query, API_KEY);
 
   function handleSelectMovie(id) {
     // When clicking on the active id then close it
@@ -43,46 +43,6 @@ function PopcornApp() {
   useEffect(() => {
     localStorage.setItem('watched', JSON.stringify(watched));
   }, [watched]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function fecthMovies() {
-      try {
-        setError('');
-        setIsLoading(true);
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`,
-          { signal: controller.signal }
-        );
-        // Edge cases
-        if (!res.ok)
-          throw new Error('Something went wrong when fetching movies');
-
-        const data = await res.json();
-        if (data.Response === 'False') throw new Error('Movie not found');
-        setMovies(data.Search);
-        setError('');
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          setError(err.message);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    if (query.length < 3) {
-      setMovies([]);
-      setError('');
-      return;
-    }
-    handleCloseMovie();
-    fecthMovies();
-
-    return () => {
-      controller.abort();
-    };
-  }, [query]);
 
   return (
     <>
