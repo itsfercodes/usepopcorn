@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 function SearchInput({ query, setQuery }) {
   return (
     <input

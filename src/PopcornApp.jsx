@@ -16,7 +16,9 @@ const API_KEY = '573749c0';
 function PopcornApp() {
   const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(() =>
+    JSON.parse(localStorage.getItem('watched'))
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState(null);
@@ -37,6 +39,10 @@ function PopcornApp() {
   function handleDeleteWatched(id) {
     setWatched((w) => w.filter((currentMovie) => currentMovie.imdbID !== id));
   }
+
+  useEffect(() => {
+    localStorage.setItem('watched', JSON.stringify(watched));
+  }, [watched]);
 
   useEffect(() => {
     const controller = new AbortController();

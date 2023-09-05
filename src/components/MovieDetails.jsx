@@ -34,6 +34,8 @@ function MovieDetails({
     Genre: genre
   } = movie;
 
+  const isTop = imdbRating > 8;
+
   function handleAddWatchedMovie() {
     const newWatchedMovie = {
       imdbID: selectedId,
